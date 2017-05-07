@@ -114,14 +114,15 @@ if_statement
   }
 
 comma
-  = left:assign COMMA right:comma {
+  = left:assign right:(COMMA assign)* {
+    var ops = [];
+    ops.push(left);
+    right.forEach(x => ops.push(x[1]));
     return {
-      type:  "COMMA",
-      left:  left,
-      right: right
+      type:        "COMMA",
+      operations:  ops
     };
   }
-  / assign
 
 function_statement
   = FUNCTION id:ID LEFTPAR params:(ID (COMMA ID)*)? RIGHTPAR LEFTBRACE &{
@@ -230,10 +231,14 @@ factor
 
     id = id[1];
 
+    var argsTable = functionTable[id].params  === undefined ? 0 : functionTable[id].params.length;
+    var argsCall  = args.arguments.operations === undefined ? 0 : args.arguments.operations.length;
+
     if (!functionTable[id])
       throw id + " not defined as function.";
 
-    // TODO Evitar llamar a funciones con más o menos argumentos de los que son.
+    else if (argsTable != argsCall)
+      throw "Invalid number of arguments for function " + id + ".";
 
     return {
       type: "CALL",
@@ -270,7 +275,7 @@ arguments
   = LEFTPAR comma:(comma)? RIGHTPAR {
     return {
       type:      "ARGUMENTS",
-      arguments: (comma == null ? {} : comma)
+      arguments: (comma == null ? [] : comma)
     };
   }
 
@@ -292,7 +297,7 @@ RIGHTPAR    = _")"_
 SEMICOLON   = _";"_
 LEFTBRACE   = _"{"_
 RIGHTBRACE  = _"}"_
-LOOP        = _"loop"_
+LOOP        = _"for"_
 RETURN      = _"return"_
 EXIT        = _"exit"_
 FUNCTION    = _"function"_

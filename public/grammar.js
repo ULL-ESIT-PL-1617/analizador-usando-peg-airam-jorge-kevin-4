@@ -178,10 +178,12 @@ function peg$parse(input, options) {
           }
         },
       peg$c4 = function(left, right) {
+          var ops = [];
+          ops.push(left);
+          right.forEach(x => ops.push(x[1]));
           return {
-            type:  "COMMA",
-            left:  left,
-            right: right
+            type:        "COMMA",
+            operations:  ops
           };
         },
       peg$c5 = function(id, params) {
@@ -275,12 +277,15 @@ function peg$parse(input, options) {
       peg$c14 = function(id, args) {
 
           id = id[1];
-          console.log(functionTable[id].params.length);
+
+          var argsTable = functionTable[id].params  === undefined ? 0 : functionTable[id].params.length;
+          var argsCall  = args.arguments.operations === undefined ? 0 : args.arguments.operations.length;
 
           if (!functionTable[id])
             throw id + " not defined as function.";
 
-          // TODO Evitar llamar a funciones con más o menos argumentos de los que son.
+          else if (argsTable != argsCall)
+            throw "Invalid number of arguments for function " + id + ".";
 
           return {
             type: "CALL",
@@ -315,7 +320,7 @@ function peg$parse(input, options) {
       peg$c18 = function(comma) {
           return {
             type:      "ARGUMENTS",
-            arguments: (comma == null ? {} : comma)
+            arguments: (comma == null ? [] : comma)
           };
         },
       peg$c19 = peg$otherExpectation("integer"),
@@ -343,8 +348,8 @@ function peg$parse(input, options) {
       peg$c41 = peg$literalExpectation("{", false),
       peg$c42 = "}",
       peg$c43 = peg$literalExpectation("}", false),
-      peg$c44 = "loop",
-      peg$c45 = peg$literalExpectation("loop", false),
+      peg$c44 = "for",
+      peg$c45 = peg$literalExpectation("for", false),
       peg$c46 = "return",
       peg$c47 = peg$literalExpectation("return", false),
       peg$c48 = "exit",
@@ -741,22 +746,49 @@ function peg$parse(input, options) {
   }
 
   function peg$parsecomma() {
-    var s0, s1, s2, s3;
+    var s0, s1, s2, s3, s4, s5;
 
     s0 = peg$currPos;
     s1 = peg$parseassign();
     if (s1 !== peg$FAILED) {
-      s2 = peg$parseCOMMA();
-      if (s2 !== peg$FAILED) {
-        s3 = peg$parsecomma();
-        if (s3 !== peg$FAILED) {
-          peg$savedPos = s0;
-          s1 = peg$c4(s1, s3);
-          s0 = s1;
+      s2 = [];
+      s3 = peg$currPos;
+      s4 = peg$parseCOMMA();
+      if (s4 !== peg$FAILED) {
+        s5 = peg$parseassign();
+        if (s5 !== peg$FAILED) {
+          s4 = [s4, s5];
+          s3 = s4;
         } else {
-          peg$currPos = s0;
-          s0 = peg$FAILED;
+          peg$currPos = s3;
+          s3 = peg$FAILED;
         }
+      } else {
+        peg$currPos = s3;
+        s3 = peg$FAILED;
+      }
+      while (s3 !== peg$FAILED) {
+        s2.push(s3);
+        s3 = peg$currPos;
+        s4 = peg$parseCOMMA();
+        if (s4 !== peg$FAILED) {
+          s5 = peg$parseassign();
+          if (s5 !== peg$FAILED) {
+            s4 = [s4, s5];
+            s3 = s4;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s3;
+          s3 = peg$FAILED;
+        }
+      }
+      if (s2 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c4(s1, s2);
+        s0 = s1;
       } else {
         peg$currPos = s0;
         s0 = peg$FAILED;
@@ -764,9 +796,6 @@ function peg$parse(input, options) {
     } else {
       peg$currPos = s0;
       s0 = peg$FAILED;
-    }
-    if (s0 === peg$FAILED) {
-      s0 = peg$parseassign();
     }
 
     return s0;
@@ -1669,9 +1698,9 @@ function peg$parse(input, options) {
     s0 = peg$currPos;
     s1 = peg$parse_();
     if (s1 !== peg$FAILED) {
-      if (input.substr(peg$currPos, 4) === peg$c44) {
+      if (input.substr(peg$currPos, 3) === peg$c44) {
         s2 = peg$c44;
-        peg$currPos += 4;
+        peg$currPos += 3;
       } else {
         s2 = peg$FAILED;
         if (peg$silentFails === 0) { peg$fail(peg$c45); }
