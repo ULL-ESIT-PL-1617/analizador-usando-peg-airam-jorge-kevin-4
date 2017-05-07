@@ -22,8 +22,8 @@ comma
   = left:assign COMMA right:comma {
     return { type: "COMMA", left: left, right: right };
   }
-  / a:assign {
-    return { left: a }
+  / as:assign {
+    return { left: as }
   }
 
 loop_stament
@@ -39,7 +39,9 @@ assign
        symbolTable[id] = 'constant';
        return { type: "ASSIGN", id: id, right: a };
   }
-  / additive
+  / ad:additive {
+    return { left: ad }
+  }
 
 arguments
   = LEFTPAR comma:comma RIGHTPAR {
