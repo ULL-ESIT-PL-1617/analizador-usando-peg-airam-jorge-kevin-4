@@ -26,6 +26,11 @@ comma
     return { left: as }
   }
 
+function
+  = FUNCTION name:ID LEFTPAR params:(ID (COMMA ID)*)? RIGHTPAR LEFTBRACE code:sentences RIGHTBRACE {
+    return { type: "FUNCTION", name: name, params: params, code: code }
+  }
+
 loop_stament
   = LOOP LEFTPAR left:comma SEMICOLON condition:condition SEMICOLON right:comma RIGHTPAR LEFTBRACE sentences:sentences RIGHTBRACE {
     return { type: "LOOP", left: left, condition: condition, right: right, sentences: sentences }
@@ -103,6 +108,7 @@ ADDOP = PLUS / MINUS
 MULOP = MULT / DIV
 LOOP = _"LOOP"_
 COMMA = _","_
+FUNCTION =_"FUNCTION"_
 PLUS = _"+"_
 MINUS = _"-"_
 MULT = _"*"_
