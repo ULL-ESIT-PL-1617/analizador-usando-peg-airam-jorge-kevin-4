@@ -6,9 +6,45 @@
 }
 
 start
-  = a:comma {
-      return { symbolTable: symbolTable, result: a };
+  = a:sentences {
+      return { constantSymbols: constantSymbols, symbolTable: symbolTable, result: a };
     }
+
+sentences
+ = a:(sentence)* {
+     return {  sentences: a };
+ }
+
+sentence
+ = if_statement
+ / a:assign SEMICOLON { return a; }
+
+if_statement
+ = IF condition LEFTBRACE codeA:sentences RIGHTBRACE codeB:(ELIF condition LEFTBRACE sentences RIGHTBRACE)* codeC:(ELSE condition LEFTBRACE sentences RIGHTBRACE)? {
+
+     let ifCode     = {
+         condition: "2<3",
+         sentences: codeA.sentences
+     };
+
+     let elseCode = (codeC === null) ? {} : {
+         condition: "8==9",
+         sentences: codeC[3].sentences
+     };
+
+     let elseIfCode = [];
+     codeB.forEach(x => elseIfCode.push({
+         sentences: x[3].sentences,
+         condition: "1<3"
+     }));
+
+     return {
+         type:       "IF",
+         ifCode:     ifCode,
+         elseIfCode: elseIfCode,
+         elseCode:   elseCode
+     }
+ }
 
 comma
   = left:assign COMMA right:comma {
@@ -73,6 +109,10 @@ MULT = _"*"_
 DIV = _"/"_
 LEFTPAR = _"("_
 RIGHTPAR = _")"_
+SEMICOLON = _";"_
+IF = _"IF"_
+ELIF = _"ELSE IF"_
+ELSE = _"ELSE"_
 NUMBER = _ $[0-9]+ _
 ID = _ $([a-z_]i$([a-z0-9_]i*)) _
 ASSIGN = _ '=' _
