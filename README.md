@@ -133,6 +133,75 @@ Algunos ejemplos del árbol sintáctico generado:
     Árbol resultado:
 
 
+    {
+      "reservedWords": [
+        "else",
+        "if",
+        "exit",
+        "return",
+        "for",
+        "function",
+        "const"
+      ],
+      "initialConstantTable": {
+        "PI": 3.141592653589793,
+        "TRUE": 1,
+        "FALSE": 0
+      },
+      "functionTable": {},
+      "symbolTable": {
+        "PI": "constant",
+        "TRUE": "constant",
+        "FALSE": "constant",
+        "x": "volatile",
+        "y": "volatile",
+        "z": "volatile"
+      },
+      "result": {
+        "sentences": [
+          {
+            "type": "ASSIGN",
+            "id": "x",
+            "right": {
+              "type": "NUM",
+              "value": 1
+            }
+          },
+          {
+            "type": "ASSIGN",
+            "id": "y",
+            "right": {
+              "type": "NUM",
+              "value": 2
+            }
+          },
+          {
+            "type": "ASSIGN",
+            "id": "z",
+            "right": {
+              "type": "MULOP",
+              "op": "*",
+              "left": {
+                "type": "expression",
+                "op": "+",
+                "left": {
+                  "type": "ID",
+                  "id": "x"
+                },
+                "right": {
+                  "type": "NUM",
+                  "value": 4
+                }
+              },
+              "right": {
+                "type": "ID",
+                "id": "y"
+              }
+            }
+          }
+        ]
+      }
+    }
 
 2. Utilizando una función
 
@@ -144,7 +213,90 @@ Algunos ejemplos del árbol sintáctico generado:
 
     Árbol resultado:
 
-
+    {
+      "reservedWords": [
+        "else",
+        "if",
+        "exit",
+        "return",
+        "for",
+        "function",
+        "const"
+      ],
+      "initialConstantTable": {
+        "PI": 3.141592653589793,
+        "TRUE": 1,
+        "FALSE": 0
+      },
+      "functionTable": {
+        "add": {
+          "params": [
+            "x",
+            "y"
+          ],
+          "symbolTable": {
+            "x": "volatile",
+            "y": "volatile"
+          }
+        }
+      },
+      "symbolTable": {
+        "PI": "constant",
+        "TRUE": "constant",
+        "FALSE": "constant"
+      },
+      "result": {
+        "sentences": [
+          {
+            "type": "FUNCTION",
+            "id": "add",
+            "params": [
+              "x",
+              "y"
+            ],
+            "code": {
+              "sentences": [
+                {
+                  "type": "RETURN",
+                  "assign": {
+                    "type": "expression",
+                    "op": "+",
+                    "left": {
+                      "type": "ID",
+                      "id": "x"
+                    },
+                    "right": {
+                      "type": "ID",
+                      "id": "y"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "CALL",
+            "args": {
+              "type": "ARGUMENTS",
+              "arguments": {
+                "type": "COMMA",
+                "operations": [
+                  {
+                    "type": "NUM",
+                    "value": 1
+                  },
+                  {
+                    "type": "NUM",
+                    "value": 3
+                  }
+                ]
+              }
+            },
+            "id": "add"
+          }
+        ]
+      }
+    }
 
 3. Utilizando una sentencia IF
 
