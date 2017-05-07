@@ -1,8 +1,11 @@
 {
-    var constantSymbols = new Set(["PI", "TRUE", "FALSE"]);
     var reservedWords = new Set(["ELSE", "IF", "EXIT", "RETURN", "LOOP", "FUNCTION", "CONST"]);
-    var functionTable = {};
-    var symbolTable = {
+    var symbolTable = { // Tipos: constant, volatile, function
+        PI:     "constant",
+        TRUE:   "constant",
+        FALSE:  "constant"
+    };
+    var constantTable = {
         PI: Math.PI,
         TRUE: 1,
         FALSE: 0
@@ -11,7 +14,7 @@
 
 start
   = a:sentences {
-      return { constantSymbols: constantSymbols, symbolTable: symbolTable, result: a };
+      return { reservedWords: reservedWords, symbolTable: symbolTable, constantTable: constantTable, result: a };
   }
 
 sentences
@@ -62,9 +65,9 @@ function_statement
   = FUNCTION id:ID LEFTPAR params:(ID (COMMA ID)*)? RIGHTPAR LEFTBRACE code:sentences RIGHTBRACE {
     if (reservedWords.has(id))
       throw "Cant declare reserved word as function " + id;
-    if (functionTable[id])
+    if (symbolTable[id] == "function")
       throw "Function already declared" + id;
-    functionTable[id] = "function";
+    symbolTable[id] = "function";
     return { type: "FUNCTION", id: id, params: params, code: code }
   }
 
@@ -75,21 +78,21 @@ loop_statement
 
 assign
   = c:CONST? id:ID ASSIGN a:assign {
-      console.log(c, constantSymbols);
-      if (c != null) { // Se declara como constante
-          if (constantSymbols.has(id))
-             throw "Cant redeclare constant " + id;
-          if (symbolTable[id])
+    id = id[1];
+    if (c != null) { // Se declara como constante
+        if (symbolTable[id] == "constant")
+            throw "Cant redeclare constant " + id;
+        if (symbolTable[id] == "volatile")
             throw "Cant redeclare variable as constant " + id;
-          constantSymbols.add(id[1]);
-      }
-       id = id[1];
-         if (reservedWords.has(id))
-           throw "Cant declare reserved word as variable " + id;
-       if (constantSymbols.has(id))
-          throw "Cant override value of constant " + id;
-       symbolTable[id] = 'constant';
-       return { type: "ASSIGN", id: id, right: a };
+        symbolTable[id] = 'constant';
+    } else {
+        if (reservedWords.has(id))
+            throw "Cant declare reserved word as variable " + id;
+        if (symbolTable[id] == "constant")
+            throw "Cant override value of constant " + id;
+        symbolTable[id] = 'volatile';
+    }
+    return { type: "ASSIGN", id: id, right: a };
   }
   / cond:condition {
     return cond;
@@ -138,12 +141,12 @@ factor
   }
   / id:ID {
       id = id[1];
-      if (!symbolTable[id]) { throw id + " not defined as variable (or constant)"; }
+      if (symbolTable[id] != "volatile" || symbolTable[id] != "constant") { throw id + " not defined as variable (or constant)"; }
       return { type: "ID", id: id};
     }
   / id:ID args:arguments {
       id = id[1];
-      if (!functionTable[id]) { throw id + " not defined as function"; }
+      if (symbolTable[id] != "function") { throw id + " not defined as function"; }
       return {
           type: "CALL",
           args: args,
