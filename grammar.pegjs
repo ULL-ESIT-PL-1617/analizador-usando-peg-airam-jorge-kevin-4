@@ -23,7 +23,7 @@ comma
     return { type: "COMMA", left: left, right: right };
   }
   / a:assign {
-    return { type: "ASSIGN", left: a }
+    return { left: a }
   }
 
 loop_stament
