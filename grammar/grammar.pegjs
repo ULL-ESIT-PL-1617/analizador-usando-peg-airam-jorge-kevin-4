@@ -41,10 +41,10 @@
       throw "Cant declare function inside another function.";
 
     else if (functionTable[id])
-      throw "Function already declared " + id;
+      throw "Function already declared '" + id + "'.";
 
     else if (reservedWords.has(id))
-      throw "Cant declare reserved word as function " + id;
+      throw "Cant declare reserved word as function '" + id + "'";
 
     functionTable[id] = {
       params: params,
@@ -166,10 +166,10 @@ assign
     var currSymbolTable = getCurrentSymbolTable();
 
     if (reservedWords.has(id))
-      throw id + " is a reserved word.";
+      throw "'" + id + "' is a reserved word.";
 
     else if (c && (currSymbolTable[id] == "constant"))
-      throw "Cant redeclare constant " + id;
+      throw "Cant redeclare constant '" + id + "'.";
 
     else if (c && (currSymbolTable[id] == "volatile"))
       throw "Cant redeclare variable as constant " + id;
@@ -235,10 +235,10 @@ factor
     var argsCall  = args.arguments.operations === undefined ? 0 : args.arguments.operations.length;
 
     if (!functionTable[id])
-      throw id + " not defined as function.";
+      throw "'" + id + "' not defined as function.";
 
     else if (argsTable != argsCall)
-      throw "Invalid number of arguments for function " + id + ".";
+      throw "Invalid number of arguments for function '" + id + "'.";
 
     return {
       type: "CALL",
@@ -258,6 +258,9 @@ factor
       type: "ID",
       id: id
     };
+  }
+  / LEFTPAR a:assign RIGHTPAR {
+    return a;
   }
   / RETURN assign:(assign)? {
     return {
