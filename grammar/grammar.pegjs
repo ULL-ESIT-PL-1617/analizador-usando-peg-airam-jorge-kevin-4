@@ -155,7 +155,7 @@ loop_statement
       left:      left,
       condition: condition,
       right:     right,
-      sentences: code
+      sentences: code.sentences
     };
   }
 

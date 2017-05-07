@@ -216,7 +216,7 @@ function peg$parse(input, options) {
             left:      left,
             condition: condition,
             right:     right,
-            sentences: code
+            sentences: code.sentences
           };
         },
       peg$c9 = function(c, id, right) {
