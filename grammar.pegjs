@@ -6,8 +6,8 @@
     FALSE:  "constant"
   };
   var constantTable = {
-    PI: Math.PI,
-    TRUE: 1,
+    PI:    Math.PI,
+    TRUE:  1,
     FALSE: 0
   };
 }
