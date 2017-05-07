@@ -227,6 +227,17 @@ factor
       value: parseInt(int[1])
     };
   }
+  / RETURN assign:(assign)? {
+    return {
+      type: "RETURN",
+      assign: (assign == null ? {} : assign)
+    };
+  }
+  / EXIT {
+    return {
+      type: "EXIT"
+    };
+  }
   / id:ID args:arguments {
 
     id = id[1];
@@ -261,17 +272,6 @@ factor
   }
   / LEFTPAR a:assign RIGHTPAR {
     return a;
-  }
-  / RETURN assign:(assign)? {
-    return {
-      type: "RETURN",
-      assign: (assign == null ? {} : assign)
-    };
-  }
-  / EXIT {
-    return {
-      type: "EXIT"
-    };
   }
 
 arguments
