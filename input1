@@ -1,1 +1,1 @@
-FUNCTION hola(Z) { a=3; } hola(1);
+FUNCTION c(a, b, c) {}
