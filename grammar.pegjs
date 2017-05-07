@@ -74,16 +74,15 @@ loop_statement
   }
 
 assign
-  = c:CONST? id:ID ASSIGN a:assign {
+  = c:CONST? id:$ID ASSIGN a:assign {
       console.log(c, constantSymbols);
       if (c != null) { // Se declara como constante
           if (constantSymbols.has(id))
              throw "Cant redeclare constant " + id;
           if (symbolTable[id])
             throw "Cant redeclare variable as constant " + id;
-          constantSymbols.add(id[1]);
+          constantSymbols.add(id);
       }
-       id = id[1];
          if (reservedWords.has(id))
            throw "Cant declare reserved word as variable " + id;
        if (constantSymbols.has(id))
@@ -96,11 +95,11 @@ assign
   }
 
 condition
-  = left:expression comp:COMPARASION right:expression {
+  = left:expression comp:$COMPARASION right:expression {
     return {
       type: "CONDITION",
       left: left,
-      comparador: comp[1],
+      comparador: comp,
       right: right
     }
   }
@@ -109,10 +108,10 @@ condition
   }
 
 expression
-  = left:term op:ADDOP right:expression {
+  = left:term op:$ADDOP right:expression {
     return {
       type: "expression",
-      op: op[1],
+      op: op,
       left: left,
       right: right
     };
@@ -120,10 +119,10 @@ expression
   / term
 
 term
-  = left:factor op:MULOP right:term {
+  = left:factor op:$MULOP right:term {
     return {
       type: "MULOP",
-      op: op[1],
+      op: op,
       left: left,
       right: right
     };
@@ -133,16 +132,14 @@ term
   }
 
 factor
-  = int:integer {
-      return { type: "NUM", value: parseInt(int[1])};
+  = int:$integer {
+      return { type: "NUM", value: parseInt(int)};
   }
-  / id:ID {
-      id = id[1];
+  / id:$ID {
       if (!symbolTable[id]) { throw id + " not defined as variable (or constant)"; }
       return { type: "ID", id: id};
     }
-  / id:ID args:arguments {
-      id = id[1];
+  / id:$ID args:arguments {
       if (!functionTable[id]) { throw id + " not defined as function"; }
       return {
           type: "CALL",
