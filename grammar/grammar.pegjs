@@ -229,7 +229,6 @@ factor
   / id:ID args:arguments {
 
     id = id[1];
-    console.log(functionTable[id].params.length);
 
     if (!functionTable[id])
       throw id + " not defined as function.";
@@ -247,7 +246,7 @@ factor
     id = id[1];
 
     var currSymbolTable = getCurrentSymbolTable();
-    if ((currSymbolTable[id] != "volatile") || (currSymbolTable[id] != "constant"))
+    if ((currSymbolTable[id] != "volatile") && (currSymbolTable[id] != "constant"))
       throw id + " not defined as variable (or constant)";
 
     return {

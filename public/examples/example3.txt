@@ -1,0 +1,14 @@
+
+FUNCTION foo(){}
+
+FUNCTION value() {
+  RETURN 1;
+}
+
+LOOP(x = 0, y = 0; (x * y) < 0; x = x + 1) {
+  y = x - value();
+  foo();
+  IF y > 10 {
+    EXIT;
+  }
+}
