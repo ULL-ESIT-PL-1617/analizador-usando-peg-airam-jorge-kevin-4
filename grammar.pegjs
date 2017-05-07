@@ -16,6 +16,14 @@ comma
   }
   / assign
 
+statements
+  = if_statement {
+    return { type: "IF" }
+  }
+  / loop_statement {
+    return { type: "LOOP" }
+  }
+
 assign
   = id:ID ASSIGN a:assign {
        id = id[1];
