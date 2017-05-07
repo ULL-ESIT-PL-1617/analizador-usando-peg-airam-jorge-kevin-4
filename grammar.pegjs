@@ -11,11 +11,11 @@ start
     }
 
 statements
-  = if_statement {
-    return { type: "IF" }
+  = if_s:if_statement {
+    return { left: if_s }
   }
-  / loop_statement {
-    return { type: "LOOP" }
+  / loop:loop_statement {
+    return { lefto: loop }
   }
 
 comma
