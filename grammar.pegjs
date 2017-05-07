@@ -28,6 +28,8 @@ comma
 
 function
   = FUNCTION name:ID LEFTPAR params:(ID (COMMA ID)*)? RIGHTPAR LEFTBRACE code:sentences RIGHTBRACE {
+    if(fuctionTable.has(name))
+      throw "Function already declared" + name;
     return { type: "FUNCTION", name: name, params: params, code: code }
   }
 
