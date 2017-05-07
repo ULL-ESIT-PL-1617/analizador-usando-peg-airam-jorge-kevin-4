@@ -37,7 +37,7 @@
         3.  statements      → if_statement | loop_statement
 
         4. if_statement     → IF condition '{' sentences '}' (ELSE IF condition '{' sentences '}' )* (ELSE '{' sentences '}')?
-        5. loop_statement   → LOOP '(' comma ';' condition ';' comma ')' '{' sentences '}'
+        5. loop_statement   → FOR '(' comma ';' condition ';' comma ')' '{' sentences '}'
 
         6.  comma           → assing (',' assing)*
         7.  assing          → CONST? ID '=' assing | condition
@@ -52,40 +52,40 @@
 1. Las sentencias pueden ser asignaciones, funciones o declaraciones.
 2. Las funciones se declaran de la siguiente forma. Pueden ser declaradas en cualquier momento y accedidas globalmente:
 
-       FUNCTION ID(ID, ID, ...) {
+       function ID(ID, ID, ...) {
          ...
-         RETURN ...;
+         return ...;
        }
 
    Por ejemplo:
 
-        FUNCTION test(x){
-         x = 3;
+        function test(x){
+          x = 3;
         }
 
         FUNCTION foo() {
-          RETURN 3;
+          return 3;
         }
 
 4. Condicionales:
 
-        IF condicion {
+        if condicion {
           ...
         }
 
-        IF condition {
+        if condition {
           ...
-        } ELSE IF condition {
+        } else if condition {
           ...
-        } ELSE IF condition {
+        } else if condition {
           ...
-        } ELSE {
+        } else {
           ...
         }
 
 5. Bucles:
 
-        LOOP (#1 ; #2; #3) {
+        for (#1 ; #2; #3) {
          ...
         }
         #1 => Operaciones que se ejecutan antes de entrar al bucle.
@@ -94,14 +94,14 @@
 
    Por ejemplo:
 
-        LOOP ( i = 0; i < 3; i = i + 1) {
+        for ( i = 0; i < 3; i = i + 1) {
          ...
         }
 
 7. La asignación puede se puede realizar a cualquier tipo de expresión
    Dichas asignaciones se declaran de la siguiente forma:
 
-        CONST y = 5;
+        const y = 5;
         x = 3 * 2;
         z = foo( 3 * 4) * 4;
         h = 1 > 2;
@@ -132,191 +132,98 @@ Algunos ejemplos del árbol sintáctico generado:
 
     Árbol resultado:
 
-        {
-          "result": [
-          {
-            "type": "=",
-            "left": "x",
-            "right": {
-              "type": "NUM",
-              "value": 1
-            }
-          },
-          {
-            "type": "=",
-            "left": "y",
-            "right": {
-              "type": "NUM",
-              "value": 2
-            }
-          },
-          {
-            "type": "=",
-            "left": "z",
-            "right": {
-              "type": "*",
-              "left": {
-                "type": "COMMA",
-                "values": [
-                  {
-                    "type": "+",
-                    "left": {
-                      "type": "ID",
-                      "value": "x"
-                    },
-                    "right": {
-                      "type": "NUM",
-                      "value": 4
-                    }
-                  }
-                ]
-              },
-              "right": {
-                "type": "ID",
-                "value": "y"
-              }
-            }
-          }
-          ],
-          "symbolTable": {
-            "x": "volatile",
-            "y": "volatile",
-            "z": "volatile"
-          },
-          "functionTable": {},
-          "constantTable": {
-            "true": 1,
-            "false": 0
-          }
-        }
+
 
 2. Utilizando una función
 
-        FUNCTION add(x, y) {
-            RETURN x + y;
+        function add(x, y) {
+            return x + y;
         }
 
         add(1, 3);
 
     Árbol resultado:
 
-        {
-          "result": [
-          {
-            "type": "FUNCTION",
-            "id": "add",
-            "parameters": {
-              "x": "parameter",
-              "y": "parameter"
-            },
-            "code": [
-              {
-                "type": "RETURN",
-                "value": {
-                  "type": "+",
-                  "left": {
-                    "type": "ID",
-                    "value": "x"
-                  },
-                  "right": {
-                    "type": "ID",
-                    "value": "y"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "type": "CALL",
-            "id": "add",
-            "arguments": {
-              "type": "COMMA",
-              "values": [
-                {
-                  "type": "NUM",
-                  "value": 1
-                },
-                {
-                  "type": "NUM",
-                  "value": 3
-                }
-              ]
-            }
-          }
-          ],
-          "symbolTable": {},
-          "functionTable": {
-          "add": {
-            "local_symbol_table": {
-              "x": "parameter",
-              "y": "parameter"
-            }
-          }
-          },
-          "constantTable": {
-            "true": 1,
-            "false": 0
-          }
-        }
+
 
 3. Utilizando una sentencia IF
 
-        IF 2 > 3 {
+        if 2 > 3 {
           c = 4;
         }
-        ELSE {
+        else {
           c = 5;
         }
 
     Árbol resultado:
 
-        {
-          "result": [
+    {
+      "reservedWords": [
+        "else",
+        "if",
+        "exit",
+        "return",
+        "for",
+        "function",
+        "const"
+      ],
+      "initialConstantTable": {
+        "PI": 3.141592653589793,
+        "TRUE": 1,
+        "FALSE": 0
+      },
+      "functionTable": {},
+      "symbolTable": {
+        "PI": "constant",
+        "TRUE": "constant",
+        "FALSE": "constant",
+        "c": "volatile"
+      },
+      "result": {
+        "sentences": [
           {
             "type": "IF",
-            "if_condition": {
-              "type": ">",
-              "left": {
-                "type": "NUM",
-                "value": 2
+            "ifCode": {
+              "condition": {
+                "type": "CONDITION",
+                "left": {
+                  "type": "NUM",
+                  "value": 2
+                },
+                "op": ">",
+                "right": {
+                  "type": "NUM",
+                  "value": 3
+                }
               },
-              "right": {
-                "type": "NUM",
-                "value": 3
-              }
+              "sentences": [
+                {
+                  "type": "ASSIGN",
+                  "id": "c",
+                  "right": {
+                    "type": "NUM",
+                    "value": 4
+                  }
+                }
+              ]
             },
-            "if_sentences": [
-              {
-                "type": "=",
-                "left": "c",
-                "right": {
-                  "type": "NUM",
-                  "value": 4
+            "elseIfCode": [],
+            "elseCode": {
+              "sentences": [
+                {
+                  "type": "ASSIGN",
+                  "id": "c",
+                  "right": {
+                    "type": "NUM",
+                    "value": 5
+                  }
                 }
-              }
-            ],
-            "elseif_sentences": [],
-            "else_sentece": [
-              {
-                "type": "=",
-                "left": "c",
-                "right": {
-                  "type": "NUM",
-                  "value": 5
-                }
-              }
-            ]
+              ]
+            }
           }
-          ],
-          "symbolTable": {
-            "c": "volatile"
-          },
-          "functionTable": {},
-          "constantTable": {
-            "true": 1,
-            "false": 0
-          }
-        }
+        ]
+      }
+    }
 
 ### Recursos
 
