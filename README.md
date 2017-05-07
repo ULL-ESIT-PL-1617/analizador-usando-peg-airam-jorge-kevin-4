@@ -225,6 +225,103 @@ Algunos ejemplos del árbol sintáctico generado:
       }
     }
 
+4. Utilizando una sentencia FOR
+
+        for ( i = 0; i < 5 ; i = i + 1) {
+          i = 3;
+        }
+
+        Árbol resultado:
+
+        {
+          "reservedWords": [
+            "else",
+            "if",
+            "exit",
+            "return",
+            "for",
+            "function",
+            "const"
+          ],
+          "initialConstantTable": {
+            "PI": 3.141592653589793,
+            "TRUE": 1,
+            "FALSE": 0
+          },
+          "functionTable": {},
+          "symbolTable": {
+            "PI": "constant",
+            "TRUE": "constant",
+            "FALSE": "constant",
+            "i": "volatile"
+          },
+          "result": {
+            "sentences": [
+              {
+                "type": "LOOP",
+                "left": {
+                  "type": "COMMA",
+                  "operations": [
+                    {
+                      "type": "ASSIGN",
+                      "id": "i",
+                      "right": {
+                        "type": "NUM",
+                        "value": 0
+                      }
+                    }
+                  ]
+                },
+                "condition": {
+                  "type": "CONDITION",
+                  "left": {
+                    "type": "ID",
+                    "id": "i"
+                  },
+                  "op": "<",
+                  "right": {
+                    "type": "NUM",
+                    "value": 5
+                  }
+                },
+                "right": {
+                  "type": "COMMA",
+                  "operations": [
+                    {
+                      "type": "ASSIGN",
+                      "id": "i",
+                      "right": {
+                        "type": "expression",
+                        "op": "+",
+                        "left": {
+                          "type": "ID",
+                          "id": "i"
+                        },
+                        "right": {
+                          "type": "NUM",
+                          "value": 1
+                        }
+                      }
+                    }
+                  ]
+                },
+                "sentences": {
+                  "sentences": [
+                    {
+                      "type": "ASSIGN",
+                      "id": "i",
+                      "right": {
+                        "type": "NUM",
+                        "value": 3
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }    
+
 ### Recursos
 
 * [Apuntes: Programación Orientada a Objetos](https://casianorodriguezleon.gitbooks.io/ull-esit-1617/content/apuntes/oop/)
