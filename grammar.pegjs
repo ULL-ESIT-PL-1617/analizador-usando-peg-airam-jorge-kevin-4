@@ -63,6 +63,7 @@ comma
 
 function_statement
   = FUNCTION id:ID LEFTPAR params:(ID (COMMA ID)*)? RIGHTPAR LEFTBRACE code:sentences RIGHTBRACE {
+      id = id[1];
     if (reservedWords.has(id))
       throw "Cant declare reserved word as function " + id;
     if (symbolTable[id] == "function")
@@ -77,8 +78,7 @@ loop_statement
   }
 
 assign
-  = c:CONST? id:ID ASSIGN a:assign {
-    id = id[1];
+  = c:CONST? id:$ID ASSIGN a:assign {
     if (c != null) { // Se declara como constante
         if (symbolTable[id] == "constant")
             throw "Cant redeclare constant " + id;
@@ -99,11 +99,11 @@ assign
   }
 
 condition
-  = left:expression comp:COMPARASION right:expression {
+  = left:expression comp:$COMPARASION right:expression {
     return {
       type: "CONDITION",
       left: left,
-      comparador: comp[1],
+      comparador: comp,
       right: right
     }
   }
@@ -112,21 +112,23 @@ condition
   }
 
 expression
-  = left:term op:ADDOP right:expression {
+  = left:term op:$ADDOP right:expression {
     return {
       type: "expression",
-      op: op[1],
+      op: op,
       left: left,
       right: right
     };
   }
-  / term
+  / a:term {
+      return a;
+  }
 
 term
-  = left:factor op:MULOP right:term {
+  = left:factor op:$MULOP right:term {
     return {
       type: "MULOP",
-      op: op[1],
+      op: op,
       left: left,
       right: right
     };
@@ -136,23 +138,21 @@ term
   }
 
 factor
-  = int:integer {
-      return { type: "NUM", value: parseInt(int[1])};
+  = int:$integer {
+      return { type: "NUM", value: parseInt(int)};
   }
-  / id:ID {
-      id = id[1];
+    / id:$ID args:arguments {
+        if (symbolTable[id] != "function") { throw id + " not defined as function"; }
+        return {
+            type: "CALL",
+            args: args,
+            id: id
+        }
+    }
+  / id:$ID {
       if (symbolTable[id] != "volatile" || symbolTable[id] != "constant") { throw id + " not defined as variable (or constant)"; }
       return { type: "ID", id: id};
     }
-  / id:ID args:arguments {
-      id = id[1];
-      if (symbolTable[id] != "function") { throw id + " not defined as function"; }
-      return {
-          type: "CALL",
-          args: args,
-          id: id
-      }
-  }
   / RETURN assign:(assign)? {
       return {
           type: "RETURN",

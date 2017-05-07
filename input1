@@ -1,3 +1,1 @@
-
-CONST a = 0;
-b = 0;
+FUNCTION hola(Z) { a=3; } hola(1);
