@@ -1,20 +1,80 @@
 {
-  var reservedWords = new Set(["ELSE", "IF", "EXIT", "RETURN", "LOOP", "FUNCTION", "CONST"]);
-  var symbolTable = { // Tipos: constant, volatile, function
+  var reservedWords = new Set([
+    "else", "if", "exit", "return", "for", "function", "const"
+  ]);
+
+  var functionTable = {};
+
+  var symbolTable = { // Tipos: constant, volatile
     PI:     "constant",
     TRUE:   "constant",
     FALSE:  "constant"
   };
-  var constantTable = {
+
+  var initialConstantTable = {
     PI:    Math.PI,
     TRUE:  1,
     FALSE: 0
   };
+
+  var depth   = 0;
+  var idStack = [];
+
+  var resolveParams = function(par) {
+      var params = [];
+      if (par != null) {
+        params.push(par[0][1]);
+        par[1].forEach(x => params.push(x[1][1]));
+      }
+      return params;
+  }
+
+  var symbolTableFromParams = function(params) {
+    var table = {}
+    params.forEach(x => table[x] = "volatile");
+    return table;
+  }
+
+  var saveFunctionInTable = function(id, params) {
+
+    if (depth > 0)
+      throw "Cant declare function inside another function.";
+
+    else if (functionTable[id])
+      throw "Function already declared " + id;
+
+    else if (reservedWords.has(id))
+      throw "Cant declare reserved word as function " + id;
+
+    functionTable[id] = {
+      params: params,
+      symbolTable: symbolTableFromParams(params)
+    }
+  }
+
+  var currentStackId = function() {
+    return idStack[idStack.length - 1];
+  }
+
+  var getCurrentSymbolTable = function() {
+    if (depth == 0)
+      return symbolTable;
+    else
+      for (var f in functionTable)
+        if (f == currentStackId())
+          return functionTable[f].symbolTable;
+  }
 }
 
 start
   = a:sentences {
-    return { reservedWords: reservedWords, symbolTable: symbolTable, constantTable: constantTable, result: a };
+    return {
+      reservedWords:        Array.from(reservedWords),
+      initialConstantTable: initialConstantTable,
+      functionTable:        functionTable,
+      symbolTable:          symbolTable,
+      result: a,
+    };
   }
 
 sentences
@@ -64,26 +124,25 @@ comma
   / assign
 
 function_statement
-  = FUNCTION id:$ID LEFTPAR par:(ID (COMMA ID)*)? RIGHTPAR LEFTBRACE code:sentences RIGHTBRACE {
+  = FUNCTION id:ID LEFTPAR params:(ID (COMMA ID)*)? RIGHTPAR LEFTBRACE &{
 
-    if (reservedWords.has(id))
-      throw "Cant declare reserved word as function " + id;
+    id = id[1];
+    saveFunctionInTable(id, resolveParams(params));
+    depth++;
+    idStack.push(id);
+    return true;
 
-    if (symbolTable[id] == "function")
-      throw "Function already declared" + id;
+  } code:sentences &{
 
-    symbolTable[id] = "function";
+    depth--;
+    idStack.pop();
+    return true;
 
-    var params = [];
-    if (par != null) {
-      params.push(par[0][1]);
-      par[1].forEach(x => params.push(x[1][1]));
-    }
-
+  } RIGHTBRACE {
     return {
       type:   "FUNCTION",
-      id:     id,
-      params: params,
+      id:     id[1],
+      params: resolveParams(params),
       code:   code
     };
   }
@@ -100,21 +159,24 @@ loop_statement
   }
 
 assign
-  = c:CONST? id:$ID ASSIGN right:assign {
+  = c:CONST? id:ID ASSIGN right:assign {
+
+    id = id[1];
+    var currSymbolTable = getCurrentSymbolTable();
 
     if (reservedWords.has(id))
       throw id + " is a reserved word.";
 
-    else if (c && (symbolTable[id] == "constant"))
+    else if (c && (currSymbolTable[id] == "constant"))
       throw "Cant redeclare constant " + id;
 
-    else if (c && (symbolTable[id] == "volatile"))
+    else if (c && (currSymbolTable[id] == "volatile"))
       throw "Cant redeclare variable as constant " + id;
 
-    else if (!c && (symbolTable[id] == "constant"))
+    else if (!c && (currSymbolTable[id] == "constant"))
       throw "Cant override value of constant " + id;
 
-    symbolTable[id] = c ? "constant" : "volatile";
+    currSymbolTable[id] = c ? "constant" : "volatile";
 
     return {
       type:  "ASSIGN",
@@ -125,21 +187,21 @@ assign
   / condition
 
 condition
-  = left:expression op:$COMPARASION right:expression {
+  = left:expression op:COMPARASION right:expression {
     return {
       type:  "CONDITION",
       left:  left,
-      op:    op,
+      op:    op[1],
       right: right
     };
   }
   / expression
 
 expression
-  = left:term op:$ADDOP right:expression {
+  = left:term op:ADDOP right:expression {
     return {
       type:  "expression",
-      op:    op,
+      op:    op[1],
       left:  left,
       right: right
     };
@@ -147,10 +209,10 @@ expression
   / term
 
 term
-  = left:factor op:$MULOP right:term {
+  = left:factor op:MULOP right:term {
     return {
       type:  "MULOP",
-      op:    op,
+      op:    op[1],
       left:  left,
       right: right
     };
@@ -158,16 +220,21 @@ term
   / factor
 
 factor
-  = int:$integer {
+  = int:integer {
     return {
       type:  "NUM",
-      value: parseInt(int)
+      value: parseInt(int[1])
     };
   }
-  / id:$ID args:arguments {
+  / id:ID args:arguments {
 
-    if (symbolTable[id] != "function")
+    id = id[1];
+    console.log(functionTable[id].params.length);
+
+    if (!functionTable[id])
       throw id + " not defined as function.";
+
+    // TODO Evitar llamar a funciones con más o menos argumentos de los que son.
 
     return {
       type: "CALL",
@@ -175,8 +242,12 @@ factor
       id:   id
     };
   }
-  / id:$ID {
-    if ((symbolTable[id] != "volatile") || (symbolTable[id] != "constant"))
+  / id:ID {
+
+    id = id[1];
+
+    var currSymbolTable = getCurrentSymbolTable();
+    if ((currSymbolTable[id] != "volatile") || (currSymbolTable[id] != "constant"))
       throw id + " not defined as variable (or constant)";
 
     return {
@@ -192,8 +263,8 @@ factor
   }
   / EXIT {
     return {
-      type: "EXIT";
-    }
+      type: "EXIT"
+    };
   }
 
 arguments
@@ -222,14 +293,14 @@ RIGHTPAR    = _")"_
 SEMICOLON   = _";"_
 LEFTBRACE   = _"{"_
 RIGHTBRACE  = _"}"_
-LOOP        = _"LOOP"_
-RETURN      = _"RETURN"_
-EXIT        = _"EXIT"_
-FUNCTION    = _"FUNCTION"_
-IF          = _"IF"_
-ELIF        = _"ELSE IF"_
-ELSE        = _"ELSE"_
-CONST       = _"CONST"_
+LOOP        = _"loop"_
+RETURN      = _"return"_
+EXIT        = _"exit"_
+FUNCTION    = _"function"_
+IF          = _"if"_
+ELIF        = _"else if"_
+ELSE        = _"else"_
+CONST       = _"const"_
 NUMBER      = _ $[0-9]+ _
 ID          = _ $([a-z_]i$([a-z0-9_]i*)) _
-COMPARASION = _$([<>!=]=/[<>])_
+COMPARASION = _ $([<>!=]"=" / [<>]) _

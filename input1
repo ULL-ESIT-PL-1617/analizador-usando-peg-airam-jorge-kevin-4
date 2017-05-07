@@ -1,1 +1,8 @@
-FUNCTION c(a, b, c) {}
+function a() {}
+function b(a, c, d) {
+  z = 9;
+  a = 10;
+  const l = 9;
+}
+
+b(1, 2, 3);
