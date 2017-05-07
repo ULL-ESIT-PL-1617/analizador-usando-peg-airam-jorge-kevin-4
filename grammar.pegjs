@@ -10,18 +10,20 @@ start
       return { symbolTable: symbolTable, result: a };
     }
 
-comma
-  = left:assign COMMA right:comma {
-    return { type: "COMMA", left: left, right: right };
-  }
-  / assign
-
 statements
   = if_statement {
     return { type: "IF" }
   }
   / loop_statement {
     return { type: "LOOP" }
+  }
+
+comma
+  = left:assign COMMA right:comma {
+    return { type: "COMMA", left: left, right: right };
+  }
+  / a:assign {
+    return { type: "ASSIGN", left: a }
   }
 
 assign
