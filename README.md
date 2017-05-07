@@ -457,18 +457,16 @@ Algunos ejemplos del árbol sintáctico generado:
                     }
                   ]
                 },
-                "sentences": {
-                  "sentences": [
-                    {
-                      "type": "ASSIGN",
-                      "id": "i",
-                      "right": {
-                        "type": "NUM",
-                        "value": 3
-                      }
+                "sentences": [
+                  {
+                    "type": "ASSIGN",
+                    "id": "i",
+                    "right": {
+                      "type": "NUM",
+                      "value": 3
                     }
-                  ]
-                }
+                  }
+                ]
               }
             ]
           }
