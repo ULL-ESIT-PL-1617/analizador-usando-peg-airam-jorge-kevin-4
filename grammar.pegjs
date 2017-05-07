@@ -26,6 +26,11 @@ comma
     return { type: "ASSIGN", left: a }
   }
 
+loop_stament
+  = LOOP LEFTPAR left:comma SEMICOLON condition:condition SEMICOLON right:comma RIGHTPAR LEFTBRACE sentences:sentences RIGHTBRACE {
+    return { type: "LOOP", left: left, condition: condition, right: right, sentences: sentences }
+  }
+
 assign
   = id:ID ASSIGN a:assign {
        id = id[1];
@@ -35,6 +40,11 @@ assign
        return { type: "ASSIGN", id: id, right: a };
   }
   / additive
+
+arguments
+  = LEFTPAR comma:comma RIGHTPAR {
+    return { type: "ARGUMENTS", arguments: comma }
+  }
 
 additive
   = left:multiplicative op:ADDOP right:additive {
@@ -76,6 +86,7 @@ _ = $[ \t\n\r]*
 
 ADDOP = PLUS / MINUS
 MULOP = MULT / DIV
+LOOP = _"LOOP"_
 COMMA = _","_
 PLUS = _"+"_
 MINUS = _"-"_
@@ -83,6 +94,8 @@ MULT = _"*"_
 DIV = _"/"_
 LEFTPAR = _"("_
 RIGHTPAR = _")"_
+LEFTBRACE = _"{"_
+RIGHTBRACE = _"}"_
 NUMBER = _ $[0-9]+ _
 ID = _ $([a-z_]i$([a-z0-9_]i*)) _
 ASSIGN = _ '=' _
