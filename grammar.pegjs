@@ -39,7 +39,7 @@ assign
        symbolTable[id] = 'constant';
        return { type: "ASSIGN", id: id, right: a };
   }
-  / ad:additive {
+  / ad:expression {
     return { left: ad }
   }
 
@@ -61,19 +61,19 @@ arguments
     return { type: "ARGUMENTS", arguments: comma }
   }
 
-additive
-  = left:multiplicative op:ADDOP right:additive {
+expression
+  = left:term op:ADDOP right:expression {
     return {
-      type: "ADDITIVE",
+      type: "expression",
       op: op[1],
       left: left,
       right: right
     };
   }
-  / multiplicative
+  / term
 
-multiplicative
-  = left:primary op:MULOP right:multiplicative {
+term
+  = left:factor op:MULOP right:term {
     return {
       type: "MULOP",
       op: op[1],
@@ -81,9 +81,9 @@ multiplicative
       right: right
     };
   }
-  / primary
+  / factor
 
-primary
+factor
   = int:integer {
       return { type: "NUM", value: parseInt(int[1])};
   }
