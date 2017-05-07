@@ -9,7 +9,7 @@
 start
   = a:sentences {
       return { constantSymbols: constantSymbols, symbolTable: symbolTable, result: a };
-    }
+  }
 
 sentences
  = a:(sentence)* {
@@ -18,7 +18,8 @@ sentences
 
 sentence
  = if_statement
- / loop_stament
+ / loop_statement
+ / function_statement
  / a:assign SEMICOLON { return a; }
 
 if_statement
@@ -55,7 +56,15 @@ comma
     return { left: as }
   }
 
-loop_stament
+function_statement
+  = FUNCTION id:ID LEFTPAR params:(ID (COMMA ID)*)? RIGHTPAR LEFTBRACE code:sentences RIGHTBRACE {
+    if (funtionTable[id])
+      throw "Function already declared" + id;
+    funtionTable[id] = "function";
+    return { type: "FUNCTION", id: id, params: params, code: code }
+  }
+
+loop_statement
   = LOOP LEFTPAR left:comma SEMICOLON condition:condition SEMICOLON right:comma RIGHTPAR LEFTBRACE code:sentences RIGHTBRACE {
     return { type: "LOOP", left: left, condition: condition, right: right, sentences: code }
   }
@@ -69,7 +78,7 @@ assign
        return { type: "ASSIGN", id: id, right: a };
   }
   / cond:condition {
-    return { left: cond }
+    return cond;
   }
 
 condition
@@ -82,7 +91,7 @@ condition
     }
   }
   / ex:expression {
-    return { left: ex }
+    return ex;
   }
 
 expression
@@ -105,9 +114,10 @@ term
       right: right
     };
   }
-  / factor
+  / fac:factor {
+      return fac;
+  }
 
-EXIT | RETURN assing?
 factor
   = int:integer {
       return { type: "NUM", value: parseInt(int[1])};
@@ -154,6 +164,7 @@ LOOP = _"LOOP"_
 RETURN = _"RETURN"_
 EXIT = _"EXIT"_
 COMMA = _","_
+FUNCTION =_"FUNCTION"_
 PLUS = _"+"_
 MINUS = _"-"_
 MULT = _"*"_
@@ -169,4 +180,4 @@ RIGHTBRACE = _"}"_
 NUMBER = _ $[0-9]+ _
 ID = _ $([a-z_]i$([a-z0-9_]i*)) _
 ASSIGN = _ '=' _
-COMPARASION = _$( ([<>!=]=) | [<>] )_
+COMPARASION = _ $([<>!=]'=' / [<>]) _
