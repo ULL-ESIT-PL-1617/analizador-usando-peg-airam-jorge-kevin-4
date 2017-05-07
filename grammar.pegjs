@@ -1,8 +1,11 @@
 {
-    var constantSymbols = new Set(["PI"]);
+    var constantSymbols = new Set(["PI", "TRUE", "FALSE"]);
+    var reservedWords = new Set(["ELSE", "IF", "EXIT", "RETURN", "LOOP", "FUNCTION", "CONST"]);
     var functionTable = {};
     var symbolTable = {
-        PI: Math.PI
+        PI: Math.PI,
+        TRUE: 1,
+        FALSE: 0
     };
 }
 
@@ -17,27 +20,26 @@ sentences
  }
 
 sentence
- = if_statement
- / loop_statement
- / function_statement
+ = a:if_statement { return a; }
+ / a:loop_statement { return a; }
+ / a:function_statement { return a; }
  / a:assign SEMICOLON { return a; }
 
 if_statement
- = IF condition LEFTBRACE codeA:sentences RIGHTBRACE codeB:(ELIF condition LEFTBRACE sentences RIGHTBRACE)* codeC:(ELSE condition LEFTBRACE sentences RIGHTBRACE)? {
+ = IF condA:condition LEFTBRACE codeA:sentences RIGHTBRACE codeB:(ELIF condition LEFTBRACE sentences RIGHTBRACE)* codeC:(ELSE LEFTBRACE sentences RIGHTBRACE)? {
      let ifCode     = {
-         condition: "2<3",
+         condition: condA,
          sentences: codeA.sentences
      };
 
      let elseCode = (codeC === null) ? {} : {
-         condition: "8==9",
-         sentences: codeC[3].sentences
+         sentences: codeC[2].sentences
      };
 
      let elseIfCode = [];
      codeB.forEach(x => elseIfCode.push({
+         condition: x[1],
          sentences: x[3].sentences,
-         condition: "1<3"
      }));
 
      return {
@@ -58,9 +60,11 @@ comma
 
 function_statement
   = FUNCTION id:ID LEFTPAR params:(ID (COMMA ID)*)? RIGHTPAR LEFTBRACE code:sentences RIGHTBRACE {
-    if (funtionTable[id])
+    if (reservedWords.has(id))
+      throw "Cant declare reserved word as function " + id;
+    if (functionTable[id])
       throw "Function already declared" + id;
-    funtionTable[id] = "function";
+    functionTable[id] = "function";
     return { type: "FUNCTION", id: id, params: params, code: code }
   }
 
@@ -70,8 +74,18 @@ loop_statement
   }
 
 assign
-  = id:ID ASSIGN a:assign {
+  = c:CONST? id:ID ASSIGN a:assign {
+      console.log(c, constantSymbols);
+      if (c != null) { // Se declara como constante
+          if (constantSymbols.has(id))
+             throw "Cant redeclare constant " + id;
+          if (symbolTable[id])
+            throw "Cant redeclare variable as constant " + id;
+          constantSymbols.add(id[1]);
+      }
        id = id[1];
+         if (reservedWords.has(id))
+           throw "Cant declare reserved word as variable " + id;
        if (constantSymbols.has(id))
           throw "Cant override value of constant " + id;
        symbolTable[id] = 'constant';
@@ -86,7 +100,7 @@ condition
     return {
       type: "CONDITION",
       left: left,
-      comparador: comp,
+      comparador: comp[1],
       right: right
     }
   }
@@ -177,6 +191,7 @@ ELIF = _"ELSE IF"_
 ELSE = _"ELSE"_
 LEFTBRACE = _"{"_
 RIGHTBRACE = _"}"_
+CONST = _"CONST"_
 NUMBER = _ $[0-9]+ _
 ID = _ $([a-z_]i$([a-z0-9_]i*)) _
 ASSIGN = _ '=' _
