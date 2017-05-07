@@ -43,6 +43,19 @@ assign
     return { left: ad }
   }
 
+condition
+  = left:expression comp:COMPARASION right:expression {
+    return {
+      type: "CONDITION",
+      left: left,
+      comparador: comp,
+      right: right
+    }
+  }
+  / ex:expression {
+    return { left: ex }
+  }
+
 arguments
   = LEFTPAR comma:comma RIGHTPAR {
     return { type: "ARGUMENTS", arguments: comma }
@@ -101,3 +114,4 @@ RIGHTBRACE = _"}"_
 NUMBER = _ $[0-9]+ _
 ID = _ $([a-z_]i$([a-z0-9_]i*)) _
 ASSIGN = _ '=' _
+COMPARASION = _$( ([<>!=]=) | [<>] )_
