@@ -6,7 +6,7 @@
 }
 
 start
-  = a:comma {
+  = a:condition {
       return { symbolTable: symbolTable, result: a };
     }
 
@@ -114,4 +114,4 @@ RIGHTBRACE = _"}"_
 NUMBER = _ $[0-9]+ _
 ID = _ $([a-z_]i$([a-z0-9_]i*)) _
 ASSIGN = _ '=' _
-COMPARASION = _$( ([<>!=]=) | [<>] )_
+COMPARASION = _ $([<>!=]'=' / [<>]) _
