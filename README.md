@@ -106,9 +106,11 @@
 
    Por ejemplo:
 
-        for ( i = 0; i < 3; i = i + 1) {
-         ...
-        }
+    ```javascript
+    for ( i = 0; i < 3; i = i + 1) {
+      ...
+    }
+    ```
 
 7. La asignación puede se puede realizar a cualquier tipo de expresión
    Dichas asignaciones se declaran de la siguiente forma:
