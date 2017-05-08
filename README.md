@@ -115,10 +115,12 @@
 7. La asignación puede se puede realizar a cualquier tipo de expresión
    Dichas asignaciones se declaran de la siguiente forma:
 
-        const y = 5;
-        x = 3 * 2;
-        z = foo( 3 * 4) * 4;
-        h = 1 > 2;
+    ```javascript
+    const y = 5;
+    x = 3 * 2;
+    z = foo( 3 * 4) * 4;
+    h = 1 > 2;
+    ```
 
     No es necesario declarar las variables previamente para que la asignación se
     produzca.
@@ -126,8 +128,10 @@
 8. Las condiciones toman valor true o false.
    Por ejemplo:
 
-        condition1 = TRUE
-        condition2 = i < 5
+    ```javascript
+    condition1 = TRUE
+    condition2 = i < 5
+    ```
 
 ### Árbol sintáctico
 
