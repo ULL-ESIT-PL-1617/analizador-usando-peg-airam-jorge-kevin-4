@@ -1,7 +1,7 @@
 # Creación de un Lenguaje
 
  - La gramática se encuentra en `grammar/grammar.pegjs`
- - Para compilar la gramática, existe una tarea en el Rakefile o directamente `pegjs -o ./public/grammar.js ./grammar/grammar.pegjs`
+ - Para compilar la gramática, existe una tarea en el Rakefile o directamente `pegjs -o ./public/grammar.js ./grammar/grammar.pegjs` (El archivo ya se encuentra compilado en `./public/grammar.js`)
  - Se puede desplegar un servidor local mediante `node app.js` o utilizar el despliegue de Heroku.
  - Las pruebas son ejecutas al desplegar la aplicación web. En la pestaña _Tests_.
 
