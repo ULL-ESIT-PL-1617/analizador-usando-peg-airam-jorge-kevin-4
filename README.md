@@ -137,12 +137,16 @@
 
 El árbol sintáctico generado contendrá los siguientes atributos.
 
+  reservedWords:        Array.from(reservedWords),
+  initialConstantTable: initialConstantTable,
+
 | Atributo | Descripción |
 | --- | --- |
 | result | Contiene el código |
-| symbolTable | Contiene información sobre los símbolos globales de variables del programa. |
-| functionTable | Contiene información sobre los símbolos que representan funciones y su propia tabla de símbolos locales. |
-| constantTable | Contiene información sobre las constantes y sus valores (true & false). |
+| symbolTable | Contiene información sobre los símbolos globales de variables del programa |
+| functionTable | Contiene información sobre los símbolos que representan funciones y su propia tabla de símbolos locales |
+| initialConstantTable | Contiene información sobre las constantes predefinidas y sus valores (PI, TRUE, FALSE, ...) |
+| reservedWords | Conjunto de palabras reservadas |
 
 ## Algunos ejemplos del árbol sintáctico generado:
 

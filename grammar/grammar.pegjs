@@ -73,7 +73,7 @@ start
       initialConstantTable: initialConstantTable,
       functionTable:        functionTable,
       symbolTable:          symbolTable,
-      result: a,
+      result: a
     };
   }
 
