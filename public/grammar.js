@@ -147,7 +147,7 @@ function peg$parse(input, options) {
             initialConstantTable: initialConstantTable,
             functionTable:        functionTable,
             symbolTable:          symbolTable,
-            result: a,
+            result: a
           };
         },
       peg$c1 = function(a) {
