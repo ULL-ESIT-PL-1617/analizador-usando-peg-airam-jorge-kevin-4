@@ -7,7 +7,7 @@
     setup(function() {
     });
     test('Multiplications are parsed correctly', () => {
-      var result = parse('3 * 4;');
+      var result = peg$parse('3 * 4;');
       console.log(result);
       assert.deepEqual(result, {
           "result": [
@@ -35,7 +35,7 @@
       assert.throws(() => parse('3 + (4+2))'), /Syntax\s+Error/i);
     });
     test('Divisions are parsed correctly', () => {
-      var result = parse('10 / 2;');
+      var result = peg$parse('10 / 2;');
       console.log(result);
       assert.deepEqual(result, {
           "result": [
@@ -60,7 +60,7 @@
         });
     });
     test('Functions are parsed correctly', () => {
-      var result = parse('FUNCTION test (x){ x = 3; }');
+      var result = peg$parse('FUNCTION test (x){ x = 3; }');
       console.log(result);
       assert.deepEqual(result, {
           "result": [
@@ -97,7 +97,7 @@
         });
     });
     test('Condition are parsed correctly', () => {
-      var result = parse('x = 2; IF x == 5 { x = 0; } ELSE { x = 1; }');
+      var result = peg$parse('x = 2; IF x == 5 { x = 0; } ELSE { x = 1; }');
       console.log(result);
       assert.deepEqual(result, {
           "result": [
@@ -156,7 +156,7 @@
         });
     });
     test('Loops are parsed correctly', () => {
-      var result = parse('y = 0; LOOP (x = 0; x < 4; x = x + 1) { y = y + 1; }');
+      var result = peg$parse('y = 0; LOOP (x = 0; x < 4; x = x + 1) { y = y + 1; }');
       console.log(result);
       assert.deepEqual(result, {
           "result": [
@@ -245,7 +245,7 @@
         });
     });
     test('The assignments are parsed correctly', () => {
-      var result = parse('FUNCTION foo(x){} CONST y = 5; x = 3 * 2; z = foo(3 * 4); h = 1 > 2;');
+      var result = peg$parse('FUNCTION foo(x){} CONST y = 5; x = 3 * 2; z = foo(3 * 4); h = 1 > 2;');
       console.log(result);
       assert.deepEqual(result, {
           "result": [
@@ -340,7 +340,7 @@
         });
     });
     test('The conditions are parsed correctly', () => {
-      var result = parse('false; i = 2; i < 5;');
+      var result = peg$parse('false; i = 2; i < 5;');
       console.log(result);
       assert.deepEqual(result, {
           "result": [
@@ -379,7 +379,7 @@
         });
     });
     test('The expressions are parsed correctly', () => {
-      var result = parse('5 + 7; 9 - 7; 7;');
+      var result = peg$parse('5 + 7; 9 - 7; 7;');
       console.log(result);
       assert.deepEqual(result, {
           "result": [
@@ -419,7 +419,7 @@
         });
     });
     test('Function calls are parsed correctly', () => {
-      var result = parse('FUNCTION f1(){} FUNCTION f2(x){} f2(5); f1(); 4 * f2(7 * 2);');
+      var result = peg$parse('FUNCTION f1(){} FUNCTION f2(x){} f2(5); f1(); 4 * f2(7 * 2);');
       console.log(result);
       assert.deepEqual(result, {
           "result": [
