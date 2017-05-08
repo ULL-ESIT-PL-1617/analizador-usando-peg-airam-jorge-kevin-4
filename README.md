@@ -133,6 +133,7 @@ Algunos ejemplos del árbol sintáctico generado:
     Árbol resultado:
 
 
+```
     {
       "reservedWords": [
         "else",
@@ -202,6 +203,7 @@ Algunos ejemplos del árbol sintáctico generado:
         ]
       }
     }
+```
 
 2. Utilizando una función
 
