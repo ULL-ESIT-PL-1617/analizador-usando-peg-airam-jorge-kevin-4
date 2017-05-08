@@ -130,7 +130,7 @@ Algunos ejemplos del árbol sintáctico generado:
 
 1. Código simple con tres instrucciones:
 
-```c
+```javascript
         x = 1;
         y = 2;
         z = (x + 4) * y;
@@ -311,7 +311,7 @@ Algunos ejemplos del árbol sintáctico generado:
 
 3. Utilizando una sentencia IF
 
-```ruby
+```javascript
         if 2 > 3 {
           c = 4;
         }
@@ -394,7 +394,7 @@ Algunos ejemplos del árbol sintáctico generado:
 
 4. Utilizando una sentencia FOR
 
-```java
+```javascript
         for ( i = 0; i < 5 ; i = i + 1) {
           i = 3;
         }
