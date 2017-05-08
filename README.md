@@ -25,27 +25,31 @@
 
 ### Descripción del Lenguaje
 
-    1.  Σ = { ADDOP, MULOP, NUM, ID, COMPARISON, CONST, LOOP, IF, ELSE,
-              FUNCTION, '(', ')', '{', '}', ';', ',', '=' }
+    1.  Σ = { ADDOP, MULOP, COMMA, ASSIGN, LEFTPAR, RIGHTPAR, SEMICOLON, LEFTBRACE,
+       RIGHTBRACE, LOOP, RETURN, EXIT, FUNCTION, IF, ELIF, ELSE, CONST, NUMBER, ID,
+       COMPARISON }
 
-    2.  V = {  sentences, functions, statements, if_statement, loop_statement, comma,
-               expression, assing, condition, expression, term, factor, arguments }
+    2.  V = { start, sentences, sentence, if_statement, for_statement, function_statement,
+       comma, loop_statement, assign, condition, expression, term, factor, arguments,
+       integer}
 
     3.  Productions:
-        1.  sentences       → ((assing ';') | function | statement)*
-        2.  functions       → FUNCTION ID '(' ID? (',' ID)* ')' '{' sentences '}'
-        3.  statements      → if_statement | loop_statement
 
-        4. if_statement     → IF condition '{' sentences '}' (ELSE IF condition '{' sentences '}' )* (ELSE '{' sentences '}')?
-        5. loop_statement   → FOR '(' comma ';' condition ';' comma ')' '{' sentences '}'
+        1.  start     → sentences
+        2.  sentences → if_statement / lopp_statement / function_statement / assign ';'
 
-        6.  comma           → assing (',' assing)*
-        7.  assing          → CONST? ID '=' assing | condition
-        8.  condition       → expression (COMPARISON expression)?
-        9.  expression      → term (ADDOP term)*
-        10. term            → factor (MULOP factor)*
-        11. factor          → arguments | NUM | ID | ID arguments | ID '(' ')' | EXIT | RETURN assing?
-        12. arguments       → '(' comma ')'
+        3.  if_statement       →  IF condition '{' sentences '}' (ELSE IF condition '{' sentences '}' )* (ELSE '{' sentences '}' )
+        4.  function_statement → FUNCTION ID '(' (ID (',' ID)* )? ')' '{' sentences '}'
+        5.  loop_statement     → FOR '(' comma ';' condition ';' comma ')' '{' sentences '}'
+
+        6.  comma       → assign (',' assign)*
+        7.  assign      → CONST? ID '=' assign / condition
+        8.  condition   → expression COMPARISON expression / expression
+        9.  expression  → term ADDOP expression / term
+        10. term        → factor MULOP term / factor
+        11. factor      → integer / RETURN assign? / EXIT / ID arguments / ID / '(' assign ')'
+        12. arguments   → '(' comma? ')'
+        13. integer     → NUMBER
 
 ### Descripción de uso del Lenguaje
 
@@ -63,7 +67,7 @@
           x = 3;
         }
 
-        FUNCTION foo() {
+        funtion foo() {
           return 3;
         }
 
@@ -112,7 +116,7 @@
 8. Las condiciones toman valor true o false.
    Por ejemplo:
 
-        condition1 = true
+        condition1 = TRUE
         condition2 = i < 5
 
 ### Árbol sintáctico
