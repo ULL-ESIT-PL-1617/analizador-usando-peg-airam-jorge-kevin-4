@@ -95,12 +95,14 @@
 
 5. Bucles:
 
-        for (#1 ; #2; #3) {
-         ...
-        }
-        #1 => Operaciones que se ejecutan antes de entrar al bucle.
-        #2 => Condición que se debe cumplir para que continue el bucle.
-        #3 => Operaciones que se ejecutan cada vez que se itera sobre el bucle.
+    ```javascript
+    for (#1 ; #2; #3) {
+     ...
+    }
+    // #1 => Operaciones que se ejecutan antes de entrar al bucle.
+    // #2 => Condición que se debe cumplir para que continue el bucle.
+    // #3 => Operaciones que se ejecutan cada vez que se itera sobre el bucle.
+    ```
 
    Por ejemplo:
 
