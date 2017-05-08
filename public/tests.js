@@ -10,9 +10,31 @@
       var result = peg$parse('3 * 4;');
       console.log(result);
       assert.deepEqual(result, {
-          "result": [
+        "reservedWords": [
+          "else",
+          "if",
+          "exit",
+          "return",
+          "for",
+          "function",
+          "const"
+        ],
+        "initialConstantTable": {
+          "PI": 3.141592653589793,
+          "TRUE": 1,
+          "FALSE": 0
+        },
+        "functionTable": {},
+        "symbolTable": {
+          "PI": "constant",
+          "TRUE": "constant",
+          "FALSE": "constant"
+        },
+        "result": {
+          "sentences": [
             {
-              "type": "*",
+              "type": "MULOP",
+              "op": "*",
               "left": {
                 "type": "NUM",
                 "value": 3
@@ -22,25 +44,42 @@
                 "value": 4
               }
             }
-          ],
-          "symbolTable": {},
-          "functionTable": {},
-          "constantTable": {
-            "true": 1,
-            "false": 0
-          }
-        });
+          ]
+        }
+      });
     });
     test('Bad expressions throw exceptions', () => {
-      assert.throws(() => parse('3 + (4+2))'), /Syntax\s+Error/i);
+      assert.throws(() => peg$parse('3 + (4+2))'), 'Expected "*", "+", "-", "/", ";", [ \\t\\n\\r], [<>!=], or [<>] but ")" found.');
     });
     test('Divisions are parsed correctly', () => {
       var result = peg$parse('10 / 2;');
       console.log(result);
       assert.deepEqual(result, {
-          "result": [
+        "reservedWords": [
+          "else",
+          "if",
+          "exit",
+          "return",
+          "for",
+          "function",
+          "const"
+        ],
+        "initialConstantTable": {
+          "PI": 3.141592653589793,
+          "TRUE": 1,
+          "FALSE": 0
+        },
+        "functionTable": {},
+        "symbolTable": {
+          "PI": "constant",
+          "TRUE": "constant",
+          "FALSE": "constant"
+        },
+        "result": {
+          "sentences": [
             {
-              "type": "/",
+              "type": "MULOP",
+              "op": "/",
               "left": {
                 "type": "NUM",
                 "value": 10
@@ -50,60 +89,98 @@
                 "value": 2
               }
             }
-          ],
-          "symbolTable": {},
-          "functionTable": {},
-          "constantTable": {
-            "true": 1,
-            "false": 0
-          }
-        });
+          ]
+        }
+      });
     });
     test('Functions are parsed correctly', () => {
-      var result = peg$parse('FUNCTION test (x){ x = 3; }');
+      var result = peg$parse('function test (x){ x = 3; }');
       console.log(result);
       assert.deepEqual(result, {
-          "result": [
+        "reservedWords": [
+          "else",
+          "if",
+          "exit",
+          "return",
+          "for",
+          "function",
+          "const"
+        ],
+        "initialConstantTable": {
+          "PI": 3.141592653589793,
+          "TRUE": 1,
+          "FALSE": 0
+        },
+        "functionTable": {
+          "test": {
+            "params": [
+              "x"
+            ],
+            "symbolTable": {
+              "x": "volatile"
+            }
+          }
+        },
+        "symbolTable": {
+          "PI": "constant",
+          "TRUE": "constant",
+          "FALSE": "constant"
+        },
+        "result": {
+          "sentences": [
             {
               "type": "FUNCTION",
               "id": "test",
-              "parameters": {
-                "x": "parameter"
-              },
-              "code": [
-                {
-                  "type": "=",
-                  "left": "x",
-                  "right": {
-                    "type": "NUM",
-                    "value": 3
+              "params": [
+                "x"
+              ],
+              "code": {
+                "sentences": [
+                  {
+                    "type": "ASSIGN",
+                    "id": "x",
+                    "right": {
+                      "type": "NUM",
+                      "value": 3
+                    }
                   }
-                }
-              ]
-            }
-          ],
-          "symbolTable": {},
-          "functionTable": {
-            "test": {
-              "local_symbol_table": {
-                "x": "parameter"
+                ]
               }
             }
-          },
-          "constantTable": {
-            "true": 1,
-            "false": 0
-          }
-        });
+          ]
+        }
+      });
     });
     test('Condition are parsed correctly', () => {
-      var result = peg$parse('x = 2; IF x == 5 { x = 0; } ELSE { x = 1; }');
+      var result = peg$parse('x = 2; if x == 5 { x = 0; } else { x = 1; }');
       console.log(result);
       assert.deepEqual(result, {
-          "result": [
+        "reservedWords": [
+          "else",
+          "if",
+          "exit",
+          "return",
+          "for",
+          "function",
+          "const"
+        ],
+        "initialConstantTable": {
+          "PI": 3.141592653589793,
+          "TRUE": 1,
+          "FALSE": 0
+        },
+        "functionTable": {},
+        "symbolTable": {
+          "PI": "constant",
+          "TRUE": "constant",
+          "FALSE": "constant",
+          "x": "volatile"
+        },
+        "result": {
+          "sentences": [
             {
-              "type": "=",
-              "left": "x",
+              "type": "ASSIGN",
+              "id": "x",
               "right": {
                 "type": "NUM",
                 "value": 2
@@ -111,71 +188,23 @@
             },
             {
               "type": "IF",
-              "if_condition": {
-                "type": "==",
-                "left": {
-                  "type": "ID",
-                  "value": "x"
+              "ifCode": {
+                "condition": {
+                  "type": "CONDITION",
+                  "left": {
+                    "type": "ID",
+                    "id": "x"
+                  },
+                  "op": "==",
+                  "right": {
+                    "type": "NUM",
+                    "value": 5
+                  }
                 },
-                "right": {
-                  "type": "NUM",
-                  "value": 5
-                }
-              },
-              "if_sentences": [
-                {
-                  "type": "=",
-                  "left": "x",
-                  "right": {
-                    "type": "NUM",
-                    "value": 0
-                  }
-                }
-              ],
-              "elseif_sentences": [],
-              "else_sentece": [
-                {
-                  "type": "=",
-                  "left": "x",
-                  "right": {
-                    "type": "NUM",
-                    "value": 1
-                  }
-                }
-              ]
-            }
-          ],
-          "symbolTable": {
-            "x": "volatile"
-          },
-          "functionTable": {},
-          "constantTable": {
-            "true": 1,
-            "false": 0
-          }
-        });
-    });
-    test('Loops are parsed correctly', () => {
-      var result = peg$parse('y = 0; LOOP (x = 0; x < 4; x = x + 1) { y = y + 1; }');
-      console.log(result);
-      assert.deepEqual(result, {
-          "result": [
-            {
-              "type": "=",
-              "left": "y",
-              "right": {
-                "type": "NUM",
-                "value": 0
-              }
-            },
-            {
-              "type": "LOOP",
-              "loop_start": {
-                "type": "COMMA",
-                "values": [
+                "sentences": [
                   {
-                    "type": "=",
-                    "left": "x",
+                    "type": "ASSIGN",
+                    "id": "x",
                     "right": {
                       "type": "NUM",
                       "value": 0
@@ -183,28 +212,99 @@
                   }
                 ]
               },
-              "loop_condition": {
-                "type": "<",
+              "elseIfCode": [],
+              "elseCode": {
+                "sentences": [
+                  {
+                    "type": "ASSIGN",
+                    "id": "x",
+                    "right": {
+                      "type": "NUM",
+                      "value": 1
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      });
+    });
+    test('Loops are parsed correctly', () => {
+      var result = peg$parse('y = 0; for (x = 0; x < 4; x = x + 1) { y = y + 1; }');
+      console.log(result);
+      assert.deepEqual(result, {
+        "reservedWords": [
+          "else",
+          "if",
+          "exit",
+          "return",
+          "for",
+          "function",
+          "const"
+        ],
+        "initialConstantTable": {
+          "PI": 3.141592653589793,
+          "TRUE": 1,
+          "FALSE": 0
+        },
+        "functionTable": {},
+        "symbolTable": {
+          "PI": "constant",
+          "TRUE": "constant",
+          "FALSE": "constant",
+          "y": "volatile",
+          "x": "volatile"
+        },
+        "result": {
+          "sentences": [
+            {
+              "type": "ASSIGN",
+              "id": "y",
+              "right": {
+                "type": "NUM",
+                "value": 0
+              }
+            },
+            {
+              "type": "LOOP",
+              "left": {
+                "type": "COMMA",
+                "operations": [
+                  {
+                    "type": "ASSIGN",
+                    "id": "x",
+                    "right": {
+                      "type": "NUM",
+                      "value": 0
+                    }
+                  }
+                ]
+              },
+              "condition": {
+                "type": "CONDITION",
                 "left": {
                   "type": "ID",
-                  "value": "x"
+                  "id": "x"
                 },
+                "op": "<",
                 "right": {
                   "type": "NUM",
                   "value": 4
                 }
               },
-              "loop_iteration": {
+              "right": {
                 "type": "COMMA",
-                "values": [
+                "operations": [
                   {
-                    "type": "=",
-                    "left": "x",
+                    "type": "ASSIGN",
+                    "id": "x",
                     "right": {
-                      "type": "+",
+                      "type": "expression",
+                      "op": "+",
                       "left": {
                         "type": "ID",
-                        "value": "x"
+                        "id": "x"
                       },
                       "right": {
                         "type": "NUM",
@@ -214,15 +314,16 @@
                   }
                 ]
               },
-              "code": [
+              "sentences": [
                 {
-                  "type": "=",
-                  "left": "y",
+                  "type": "ASSIGN",
+                  "id": "y",
                   "right": {
-                    "type": "+",
+                    "type": "expression",
+                    "op": "+",
                     "left": {
                       "type": "ID",
-                      "value": "y"
+                      "id": "y"
                     },
                     "right": {
                       "type": "NUM",
@@ -232,44 +333,73 @@
                 }
               ]
             }
-          ],
-          "symbolTable": {
-            "y": "volatile",
-            "x": "volatile"
-          },
-          "functionTable": {},
-          "constantTable": {
-            "true": 1,
-            "false": 0
-          }
-        });
+          ]
+        }
+      });
     });
     test('The assignments are parsed correctly', () => {
-      var result = peg$parse('FUNCTION foo(x){} CONST y = 5; x = 3 * 2; z = foo(3 * 4); h = 1 > 2;');
+      var result = peg$parse('function foo(x){} const y = 5; x = 3 * 2; z = foo(3 * 4); h = 1 > 2;');
       console.log(result);
       assert.deepEqual(result, {
-          "result": [
+        "reservedWords": [
+          "else",
+          "if",
+          "exit",
+          "return",
+          "for",
+          "function",
+          "const"
+        ],
+        "initialConstantTable": {
+          "PI": 3.141592653589793,
+          "TRUE": 1,
+          "FALSE": 0
+        },
+        "functionTable": {
+          "foo": {
+            "params": [
+              "x"
+            ],
+            "symbolTable": {
+              "x": "volatile"
+            }
+          }
+        },
+        "symbolTable": {
+          "PI": "constant",
+          "TRUE": "constant",
+          "FALSE": "constant",
+          "y": "constant",
+          "x": "volatile",
+          "z": "volatile",
+          "h": "volatile"
+        },
+        "result": {
+          "sentences": [
             {
               "type": "FUNCTION",
               "id": "foo",
-              "parameters": {
-                "x": "parameter"
-              },
-              "code": []
+              "params": [
+                "x"
+              ],
+              "code": {
+                "sentences": []
+              }
             },
             {
-              "type": "=",
-              "left": "y",
+              "type": "ASSIGN",
+              "id": "y",
               "right": {
                 "type": "NUM",
                 "value": 5
               }
             },
             {
-              "type": "=",
-              "left": "x",
+              "type": "ASSIGN",
+              "id": "x",
               "right": {
-                "type": "*",
+                "type": "MULOP",
+                "op": "*",
                 "left": {
                   "type": "NUM",
                   "value": 3
@@ -281,110 +411,137 @@
               }
             },
             {
-              "type": "=",
-              "left": "z",
+              "type": "ASSIGN",
+              "id": "z",
               "right": {
                 "type": "CALL",
-                "id": "foo",
-                "arguments": {
-                  "type": "COMMA",
-                  "values": [
-                    {
-                      "type": "*",
-                      "left": {
-                        "type": "NUM",
-                        "value": 3
-                      },
-                      "right": {
-                        "type": "NUM",
-                        "value": 4
+                "args": {
+                  "type": "ARGUMENTS",
+                  "arguments": {
+                    "type": "COMMA",
+                    "operations": [
+                      {
+                        "type": "MULOP",
+                        "op": "*",
+                        "left": {
+                          "type": "NUM",
+                          "value": 3
+                        },
+                        "right": {
+                          "type": "NUM",
+                          "value": 4
+                        }
                       }
-                    }
-                  ]
-                }
+                    ]
+                  }
+                },
+                "id": "foo"
               }
             },
             {
-              "type": "=",
-              "left": "h",
+              "type": "ASSIGN",
+              "id": "h",
               "right": {
-                "type": ">",
+                "type": "CONDITION",
                 "left": {
                   "type": "NUM",
                   "value": 1
                 },
+                "op": ">",
                 "right": {
                   "type": "NUM",
                   "value": 2
                 }
               }
             }
-          ],
-          "symbolTable": {
-            "y": "const",
-            "x": "volatile",
-            "z": "volatile",
-            "h": "volatile"
-          },
-          "functionTable": {
-            "foo": {
-              "local_symbol_table": {
-                "x": "parameter"
-              }
-            }
-          },
-          "constantTable": {
-            "true": 1,
-            "false": 0
-          }
-        });
+          ]
+        }
+      });
     });
     test('The conditions are parsed correctly', () => {
-      var result = peg$parse('false; i = 2; i < 5;');
+      var result = peg$parse('FALSE; i = 2; i < 5;');
       console.log(result);
       assert.deepEqual(result, {
-          "result": [
+        "reservedWords": [
+          "else",
+          "if",
+          "exit",
+          "return",
+          "for",
+          "function",
+          "const"
+        ],
+        "initialConstantTable": {
+          "PI": 3.141592653589793,
+          "TRUE": 1,
+          "FALSE": 0
+        },
+        "functionTable": {},
+        "symbolTable": {
+          "PI": "constant",
+          "TRUE": "constant",
+          "FALSE": "constant",
+          "i": "volatile"
+        },
+        "result": {
+          "sentences": [
             {
               "type": "ID",
-              "value": "false"
+              "id": "FALSE"
             },
             {
-              "type": "=",
-              "left": "i",
+              "type": "ASSIGN",
+              "id": "i",
               "right": {
                 "type": "NUM",
                 "value": 2
               }
             },
             {
-              "type": "<",
+              "type": "CONDITION",
               "left": {
                 "type": "ID",
-                "value": "i"
+                "id": "i"
               },
+              "op": "<",
               "right": {
                 "type": "NUM",
                 "value": 5
               }
             }
-          ],
-          "symbolTable": {
-            "i": "volatile"
-          },
-          "functionTable": {},
-          "constantTable": {
-            "true": 1,
-            "false": 0
-          }
-        });
+          ]
+        }
+      });
     });
     test('The expressions are parsed correctly', () => {
       var result = peg$parse('5 + 7; 9 - 7; 7;');
       console.log(result);
       assert.deepEqual(result, {
-          "result": [
+        "reservedWords": [
+          "else",
+          "if",
+          "exit",
+          "return",
+          "for",
+          "function",
+          "const"
+        ],
+        "initialConstantTable": {
+          "PI": 3.141592653589793,
+          "TRUE": 1,
+          "FALSE": 0
+        },
+        "functionTable": {},
+        "symbolTable": {
+          "PI": "constant",
+          "TRUE": "constant",
+          "FALSE": "constant"
+        },
+        "result": {
+          "sentences": [
             {
-              "type": "+",
+              "type": "expression",
+              "op": "+",
               "left": {
                 "type": "NUM",
                 "value": 5
@@ -395,7 +552,8 @@
               }
             },
             {
-              "type": "-",
+              "type": "expression",
+              "op": "-",
               "left": {
                 "type": "NUM",
                 "value": 9
@@ -409,98 +567,126 @@
               "type": "NUM",
               "value": 7
             }
-          ],
-          "symbolTable": {},
-          "functionTable": {},
-          "constantTable": {
-            "true": 1,
-            "false": 0
-          }
-        });
+          ]
+        }
+      });
     });
     test('Function calls are parsed correctly', () => {
-      var result = peg$parse('FUNCTION f1(){} FUNCTION f2(x){} f2(5); f1(); 4 * f2(7 * 2);');
+      var result = peg$parse('function f1(){} function f2(x){} f2(5); f1(); 4 * f2(7 * 2);');
       console.log(result);
       assert.deepEqual(result, {
-          "result": [
+        "reservedWords": [
+          "else",
+          "if",
+          "exit",
+          "return",
+          "for",
+          "function",
+          "const"
+        ],
+        "initialConstantTable": {
+          "PI": 3.141592653589793,
+          "TRUE": 1,
+          "FALSE": 0
+        },
+        "functionTable": {
+          "f1": {
+            "params": [],
+            "symbolTable": {}
+          },
+          "f2": {
+            "params": [
+              "x"
+            ],
+            "symbolTable": {
+              "x": "volatile"
+            }
+          }
+        },
+        "symbolTable": {
+          "PI": "constant",
+          "TRUE": "constant",
+          "FALSE": "constant"
+        },
+        "result": {
+          "sentences": [
             {
               "type": "FUNCTION",
               "id": "f1",
-              "parameters": {},
-              "code": []
+              "params": [],
+              "code": {
+                "sentences": []
+              }
             },
             {
               "type": "FUNCTION",
               "id": "f2",
-              "parameters": {
-                "x": "parameter"
+              "params": [
+                "x"
+              ],
+              "code": {
+                "sentences": []
+              }
+            },
+            {
+              "type": "CALL",
+              "args": {
+                "type": "ARGUMENTS",
+                "arguments": {
+                  "type": "COMMA",
+                  "operations": [
+                    {
+                      "type": "NUM",
+                      "value": 5
+                    }
+                  ]
+                }
               },
-              "code": []
+              "id": "f2"
             },
             {
               "type": "CALL",
-              "id": "f2",
-              "arguments": {
-                "type": "COMMA",
-                "values": [
-                  {
-                    "type": "NUM",
-                    "value": 5
-                  }
-                ]
-              }
+              "args": {
+                "type": "ARGUMENTS",
+                "arguments": []
+              },
+              "id": "f1"
             },
             {
-              "type": "CALL",
-              "id": "f1",
-              "arguments": {
-                "values": []
-              }
-            },
-            {
-              "type": "*",
+              "type": "MULOP",
+              "op": "*",
               "left": {
                 "type": "NUM",
                 "value": 4
               },
               "right": {
                 "type": "CALL",
-                "id": "f2",
-                "arguments": {
-                  "type": "COMMA",
-                  "values": [
-                    {
-                      "type": "*",
-                      "left": {
-                        "type": "NUM",
-                        "value": 7
-                      },
-                      "right": {
-                        "type": "NUM",
-                        "value": 2
+                "args": {
+                  "type": "ARGUMENTS",
+                  "arguments": {
+                    "type": "COMMA",
+                    "operations": [
+                      {
+                        "type": "MULOP",
+                        "op": "*",
+                        "left": {
+                          "type": "NUM",
+                          "value": 7
+                        },
+                        "right": {
+                          "type": "NUM",
+                          "value": 2
+                        }
                       }
-                    }
-                  ]
-                }
+                    ]
+                  }
+                },
+                "id": "f2"
               }
             }
-          ],
-          "symbolTable": {},
-          "functionTable": {
-            "f1": {
-              "local_symbol_table": {}
-            },
-            "f2": {
-              "local_symbol_table": {
-                "x": "parameter"
-              }
-            }
-          },
-          "constantTable": {
-            "true": 1,
-            "false": 0
-          }
-        });
+          ]
+        }
+      });
     });
 
   });
