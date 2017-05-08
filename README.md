@@ -56,24 +56,24 @@
 1. Las sentencias pueden ser asignaciones, funciones o declaraciones.
 2. Las funciones se declaran de la siguiente forma. Pueden ser declaradas en cualquier momento y accedidas globalmente:
 
-  ```javascript
-  function ID(ID, ID, ...) {
-    ...
-    return ...;
-  }
-  ```
+    ```javascript
+    function ID(ID, ID, ...) {
+      ...
+      return ...;
+    }
+    ```
 
-  Por ejemplo:
+    Por ejemplo:
 
-  ```javascript
-  function test(x){
-    x = 3;
-  }
+    ```javascript
+    function test(x){
+      x = 3;
+    }
 
-  funtion foo() {
-    return 3;
-  }
-  ```
+    funtion foo() {
+      return 3;
+    }
+    ```
 
 4. Condicionales:
 
