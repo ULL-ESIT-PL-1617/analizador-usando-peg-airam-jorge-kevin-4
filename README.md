@@ -216,8 +216,8 @@ Algunos ejemplos del árbol sintáctico generado:
 
         add(1, 3);
 ```
-    Árbol resultado:
 
+Árbol resultado:
 ```json
     {
       "reservedWords": [
