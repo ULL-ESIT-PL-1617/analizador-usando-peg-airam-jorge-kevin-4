@@ -136,11 +136,15 @@
 ### Árbol sintáctico
 
 El árbol sintáctico generado contendrá los siguientes atributos.
- - result: Contiene el código
- - symbolTable: Contiene información sobre los símbolos globales de variables del programa.
- - functionTable: Contiene información sobre los símbolos que representan funciones y su propia tabla de símbolos locales.
- - constantTable: Contiene información sobre las constantes y sus valores (true & false).
-Algunos ejemplos del árbol sintáctico generado:
+
+| Atributo | Descripción |
+| --- | --- |
+| result | Contiene el código |
+| symbolTable | Contiene información sobre los símbolos globales de variables del programa. |
+| functionTable | Contiene información sobre los símbolos que representan funciones y su propia tabla de símbolos locales. |
+| constantTable | Contiene información sobre las constantes y sus valores (true & false). |
+
+## Algunos ejemplos del árbol sintáctico generado:
 
 1. Código simple con tres instrucciones:
 
