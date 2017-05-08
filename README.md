@@ -130,13 +130,16 @@ Algunos ejemplos del árbol sintáctico generado:
 
 1. Código simple con tres instrucciones:
 
+```c
         x = 1;
         y = 2;
         z = (x + 4) * y;
+```
 
     Árbol resultado:
 
 
+```json
     {
       "reservedWords": [
         "else",
@@ -206,17 +209,20 @@ Algunos ejemplos del árbol sintáctico generado:
         ]
       }
     }
+```
 
 2. Utilizando una función
 
+```javascript
         function add(x, y) {
             return x + y;
         }
 
         add(1, 3);
+```
 
-    Árbol resultado:
-
+Árbol resultado:
+```json
     {
       "reservedWords": [
         "else",
@@ -301,18 +307,22 @@ Algunos ejemplos del árbol sintáctico generado:
         ]
       }
     }
+```
 
 3. Utilizando una sentencia IF
 
+```ruby
         if 2 > 3 {
           c = 4;
         }
         else {
           c = 5;
         }
+```
 
     Árbol resultado:
 
+```json
     {
       "reservedWords": [
         "else",
@@ -380,15 +390,18 @@ Algunos ejemplos del árbol sintáctico generado:
         ]
       }
     }
+```
 
 4. Utilizando una sentencia FOR
 
+```java
         for ( i = 0; i < 5 ; i = i + 1) {
           i = 3;
         }
-
+```
         Árbol resultado:
 
+```json
         {
           "reservedWords": [
             "else",
@@ -461,22 +474,21 @@ Algunos ejemplos del árbol sintáctico generado:
                     }
                   ]
                 },
-                "sentences": {
-                  "sentences": [
-                    {
-                      "type": "ASSIGN",
-                      "id": "i",
-                      "right": {
-                        "type": "NUM",
-                        "value": 3
-                      }
+                "sentences": [
+                  {
+                    "type": "ASSIGN",
+                    "id": "i",
+                    "right": {
+                      "type": "NUM",
+                      "value": 3
                     }
-                  ]
-                }
+                  }
+                ]
               }
             ]
           }
         }    
+```
 
 ### Recursos
 
