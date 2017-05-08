@@ -232,101 +232,102 @@ El árbol sintáctico generado contendrá los siguientes atributos.
 
 2. Utilizando una función
 
-```javascript
-        function add(x, y) {
-            return x + y;
-        }
+    ```javascript
+            function add(x, y) {
+                return x + y;
+            }
 
-        add(1, 3);
-```
+            add(1, 3);
+    ```
 
-Árbol resultado:
-```json
-    {
-      "reservedWords": [
-        "else",
-        "if",
-        "exit",
-        "return",
-        "for",
-        "function",
-        "const"
-      ],
-      "initialConstantTable": {
-        "PI": 3.141592653589793,
-        "TRUE": 1,
-        "FALSE": 0
-      },
-      "functionTable": {
-        "add": {
-          "params": [
-            "x",
-            "y"
+    Árbol resultado:
+
+    ```json
+        {
+          "reservedWords": [
+            "else",
+            "if",
+            "exit",
+            "return",
+            "for",
+            "function",
+            "const"
           ],
-          "symbolTable": {
-            "x": "volatile",
-            "y": "volatile"
-          }
-        }
-      },
-      "symbolTable": {
-        "PI": "constant",
-        "TRUE": "constant",
-        "FALSE": "constant"
-      },
-      "result": {
-        "sentences": [
-          {
-            "type": "FUNCTION",
-            "id": "add",
-            "params": [
-              "x",
-              "y"
-            ],
-            "code": {
-              "sentences": [
-                {
-                  "type": "RETURN",
-                  "assign": {
-                    "type": "expression",
-                    "op": "+",
-                    "left": {
-                      "type": "ID",
-                      "id": "x"
-                    },
-                    "right": {
-                      "type": "ID",
-                      "id": "y"
-                    }
-                  }
-                }
-              ]
+          "initialConstantTable": {
+            "PI": 3.141592653589793,
+            "TRUE": 1,
+            "FALSE": 0
+          },
+          "functionTable": {
+            "add": {
+              "params": [
+                "x",
+                "y"
+              ],
+              "symbolTable": {
+                "x": "volatile",
+                "y": "volatile"
+              }
             }
           },
-          {
-            "type": "CALL",
-            "args": {
-              "type": "ARGUMENTS",
-              "arguments": {
-                "type": "COMMA",
-                "operations": [
-                  {
-                    "type": "NUM",
-                    "value": 1
-                  },
-                  {
-                    "type": "NUM",
-                    "value": 3
+          "symbolTable": {
+            "PI": "constant",
+            "TRUE": "constant",
+            "FALSE": "constant"
+          },
+          "result": {
+            "sentences": [
+              {
+                "type": "FUNCTION",
+                "id": "add",
+                "params": [
+                  "x",
+                  "y"
+                ],
+                "code": {
+                  "sentences": [
+                    {
+                      "type": "RETURN",
+                      "assign": {
+                        "type": "expression",
+                        "op": "+",
+                        "left": {
+                          "type": "ID",
+                          "id": "x"
+                        },
+                        "right": {
+                          "type": "ID",
+                          "id": "y"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "CALL",
+                "args": {
+                  "type": "ARGUMENTS",
+                  "arguments": {
+                    "type": "COMMA",
+                    "operations": [
+                      {
+                        "type": "NUM",
+                        "value": 1
+                      },
+                      {
+                        "type": "NUM",
+                        "value": 3
+                      }
+                    ]
                   }
-                ]
+                },
+                "id": "add"
               }
-            },
-            "id": "add"
+            ]
           }
-        ]
-      }
-    }
-```
+        }
+    ```
 
 3. Utilizando una sentencia IF
 
