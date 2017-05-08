@@ -77,19 +77,21 @@
 
 4. Condicionales:
 
-        if condicion {
-          ...
-        }
+    ```javascript
+      if condicion {
+        ...
+      }
 
-        if condition {
-          ...
-        } else if condition {
-          ...
-        } else if condition {
-          ...
-        } else {
-          ...
-        }
+      if condition {
+        ...
+      } else if condition {
+        ...
+      } else if condition {
+        ...
+      } else {
+        ...
+      }
+    ```
 
 5. Bucles:
 
