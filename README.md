@@ -133,7 +133,7 @@ Algunos ejemplos del árbol sintáctico generado:
     Árbol resultado:
 
 
-```
+```json
     {
       "reservedWords": [
         "else",
@@ -215,6 +215,7 @@ Algunos ejemplos del árbol sintáctico generado:
 
     Árbol resultado:
 
+```json
     {
       "reservedWords": [
         "else",
@@ -299,6 +300,7 @@ Algunos ejemplos del árbol sintáctico generado:
         ]
       }
     }
+```
 
 3. Utilizando una sentencia IF
 
@@ -311,6 +313,7 @@ Algunos ejemplos del árbol sintáctico generado:
 
     Árbol resultado:
 
+```json
     {
       "reservedWords": [
         "else",
@@ -378,6 +381,7 @@ Algunos ejemplos del árbol sintáctico generado:
         ]
       }
     }
+```
 
 4. Utilizando una sentencia FOR
 
@@ -387,6 +391,7 @@ Algunos ejemplos del árbol sintáctico generado:
 
         Árbol resultado:
 
+```json
         {
           "reservedWords": [
             "else",
@@ -473,6 +478,7 @@ Algunos ejemplos del árbol sintáctico generado:
             ]
           }
         }    
+```
 
 ### Recursos
 
