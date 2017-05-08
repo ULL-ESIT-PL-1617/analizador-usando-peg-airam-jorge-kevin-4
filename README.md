@@ -137,9 +137,6 @@
 
 El árbol sintáctico generado contendrá los siguientes atributos.
 
-  reservedWords:        Array.from(reservedWords),
-  initialConstantTable: initialConstantTable,
-
 | Atributo | Descripción |
 | --- | --- |
 | result | Contiene el código |
@@ -152,86 +149,86 @@ El árbol sintáctico generado contendrá los siguientes atributos.
 
 1. Código simple con tres instrucciones:
 
-```javascript
-        x = 1;
-        y = 2;
-        z = (x + 4) * y;
-```
+    ```javascript
+            x = 1;
+            y = 2;
+            z = (x + 4) * y;
+    ```
 
     Árbol resultado:
 
 
-```json
-    {
-      "reservedWords": [
-        "else",
-        "if",
-        "exit",
-        "return",
-        "for",
-        "function",
-        "const"
-      ],
-      "initialConstantTable": {
-        "PI": 3.141592653589793,
-        "TRUE": 1,
-        "FALSE": 0
-      },
-      "functionTable": {},
-      "symbolTable": {
-        "PI": "constant",
-        "TRUE": "constant",
-        "FALSE": "constant",
-        "x": "volatile",
-        "y": "volatile",
-        "z": "volatile"
-      },
-      "result": {
-        "sentences": [
-          {
-            "type": "ASSIGN",
-            "id": "x",
-            "right": {
-              "type": "NUM",
-              "value": 1
-            }
+    ```json
+        {
+          "reservedWords": [
+            "else",
+            "if",
+            "exit",
+            "return",
+            "for",
+            "function",
+            "const"
+          ],
+          "initialConstantTable": {
+            "PI": 3.141592653589793,
+            "TRUE": 1,
+            "FALSE": 0
           },
-          {
-            "type": "ASSIGN",
-            "id": "y",
-            "right": {
-              "type": "NUM",
-              "value": 2
-            }
+          "functionTable": {},
+          "symbolTable": {
+            "PI": "constant",
+            "TRUE": "constant",
+            "FALSE": "constant",
+            "x": "volatile",
+            "y": "volatile",
+            "z": "volatile"
           },
-          {
-            "type": "ASSIGN",
-            "id": "z",
-            "right": {
-              "type": "MULOP",
-              "op": "*",
-              "left": {
-                "type": "expression",
-                "op": "+",
-                "left": {
-                  "type": "ID",
-                  "id": "x"
-                },
+          "result": {
+            "sentences": [
+              {
+                "type": "ASSIGN",
+                "id": "x",
                 "right": {
                   "type": "NUM",
-                  "value": 4
+                  "value": 1
                 }
               },
-              "right": {
-                "type": "ID",
-                "id": "y"
+              {
+                "type": "ASSIGN",
+                "id": "y",
+                "right": {
+                  "type": "NUM",
+                  "value": 2
+                }
+              },
+              {
+                "type": "ASSIGN",
+                "id": "z",
+                "right": {
+                  "type": "MULOP",
+                  "op": "*",
+                  "left": {
+                    "type": "expression",
+                    "op": "+",
+                    "left": {
+                      "type": "ID",
+                      "id": "x"
+                    },
+                    "right": {
+                      "type": "NUM",
+                      "value": 4
+                    }
+                  },
+                  "right": {
+                    "type": "ID",
+                    "id": "y"
+                  }
+                }
               }
-            }
+            ]
           }
-        ]
-      }
-    }
-```
+        }
+    ```
 
 2. Utilizando una función
 
